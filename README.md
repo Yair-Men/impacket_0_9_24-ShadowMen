@@ -1,3 +1,6 @@
+# impacket_0_9_24-ShadowMen
+Using a stable version for WebDav coerce and adding Shadow Credentials support
+
 What is Impacket?
 =================
 
