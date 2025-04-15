@@ -1,6 +1,13 @@
 # impacket_0_9_24-ShadowMen
 Using a stable version for WebDav coerce and adding Shadow Credentials support
 
+Changes to files: 
+- impacket-0.9.24\examples\ntlmrelayx.py
+- impacket-0.9.24\impacket\examples\ntlmrelayx\utils\config.py
+- impacket-0.9.24\impacket\examples\ntlmrelayx\attacks\ldapattack.py
+- requirements.txt
+
+
 What is Impacket?
 =================
 
