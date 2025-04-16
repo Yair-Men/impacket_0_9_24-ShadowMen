@@ -164,7 +164,7 @@ def start_servers(options, threads):
         c.setSMBChallenge(options.ntlmchallenge)
         c.setInterfaceIp(options.interface_ip)
         c.setExploitOptions(options.remove_mic, options.remove_target)
-        c.setWebDAVOptions(options.serve_image)
+        c.setWebDAVOptions(options.serve_image, options.shadow_source)
         c.setIsADCSAttack(options.adcs)
         c.setADCSOptions(options.template)
 
@@ -341,6 +341,10 @@ if __name__ == '__main__':
     shadowcredentials.add_argument('--export-type', action='store', required=False, choices=["PEM", " PFX"], type=lambda choice: choice.upper(), default="PFX",
                                    help='choose to export cert+private key in PEM or PFX (i.e. #PKCS12) (default: PFX))')
     shadowcredentials.add_argument('--cert-outfile-path', action='store', required=False, help='filename to store the generated self-signed PEM or PFX certificate and key')
+
+    ## Add scope for incoming auth connection to avoid relay user accounts multiple times in wallpaper coercion (until the machine account reaches our server)
+    shadowcredentials_source = shadowcredentials.add_mutually_exclusive_group(required=False)
+    shadowcredentials_source.add_argument("--shadow-source", dest="shadow_source", help="Process incoming !WebDAV! auth only to the specified account case-insensitive (or specify USER/COMPUTER all caps to process any incoming user or computer)")
 
     try:
        options = parser.parse_args()

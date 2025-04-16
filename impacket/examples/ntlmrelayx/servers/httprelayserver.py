@@ -393,6 +393,7 @@ class HTTPRelayServer(Thread):
             return True
 
         def do_ntlm_auth(self,token,authenticateMessage):
+
             #For some attacks it is important to know the authenticated username, so we store it
             if authenticateMessage['flags'] & ntlm.NTLMSSP_NEGOTIATE_UNICODE:
                 self.authUser = ('%s/%s' % (authenticateMessage['domain_name'].decode('utf-16le'),
@@ -400,6 +401,25 @@ class HTTPRelayServer(Thread):
             else:
                 self.authUser = ('%s/%s' % (authenticateMessage['domain_name'].decode('ascii'),
                                             authenticateMessage['user_name'].decode('ascii'))).upper()
+            
+            if self.config.WebDAVSource is not None:
+                LOG.info("Shadow credentials source set")
+                
+                incoming_user = self.authUser[1]
+
+                if self.config.WebDAVSource == "USER":
+                    if incoming_user.endswith("$"):
+                           LOG.info(f"Shadow credentials source set to USER. ignoring incoming auth from '{incoming_user}'")
+                           return
+                elif self.config.WebDAVSource == "COMPUTER":
+                    if not incoming_user.endswith("$"):
+                        LOG.info(f"Shadow credentials source set to COMPUTER. ignoring incoming auth from '{incoming_user}'")
+                        return
+                else:
+                    if self.config.WebDAVSource != incoming_user.lower():
+                        LOG.info(f"Shadow credentials source set to {self.config.WebDAVSource}. ignoring incoming auth from '{incoming_user}'")
+                        return
+                LOG.info(f"Shadow credentials source set and matches. relaying '{self.config.WebDAVSource}'")
 
             if authenticateMessage['user_name'] != b'' or self.target.hostname == '127.0.0.1':
                 clientResponse, errorCode = self.client.sendAuth(token)

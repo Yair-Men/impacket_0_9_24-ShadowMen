@@ -93,6 +93,7 @@ class NTLMRelayxConfig:
 
         # WebDAV options
         self.serve_image = False
+        self.WebDAVSource = None
 
         # AD CS attack options
         self.isADCSAttack = False
@@ -216,8 +217,18 @@ class NTLMRelayxConfig:
         self.remove_mic = remove_mic
         self.remove_target = remove_target
 
-    def setWebDAVOptions(self, serve_image):
+    def setWebDAVOptions(self, serve_image, WebDAVSource):
         self.serve_image = serve_image
+
+        try:
+            if WebDAVSource in ["USER", "COMPUTER", None]:
+                pass
+            else:
+                WebDAVSource = WebDAVSource.lower()
+        except AttributeError as e:
+            WebDAVSource = None
+        finally:
+            self.WebDAVSource = WebDAVSource
 
     def setADCSOptions(self, template):
         self.template = template
