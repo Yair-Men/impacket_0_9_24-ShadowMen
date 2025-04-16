@@ -1,11 +1,17 @@
 # impacket_0_9_24-ShadowMen
 Using a stable version for WebDav coerce and adding Shadow Credentials support
 
-Changes to files: 
-- impacket-0.9.24\examples\ntlmrelayx.py
-- impacket-0.9.24\impacket\examples\ntlmrelayx\utils\config.py
-- impacket-0.9.24\impacket\examples\ntlmrelayx\attacks\ldapattack.py
-- requirements.txt
+Changes made:
+- Added Shadow Credentials attack
+- Added parameter to WebDAV server, to scope the authentication relay (Can specify a specific user you want to relay authentication - the rest are ignored)
+  The reason is when coercing with wallpaper to a WebDAV server, the user account authenticate and relayed many times when all we want (Most of the times) is just to relay the machine account to perform LPE.
+- Changes the PyOpenSSL version in `requirements.txt` to no raise exception when generating certificate in Shadow Credentials attack.
+
+In Progress:
+- ~~Added~~ Shadow Credentials attribute removal (If exists) before adding a new one and saving the old one for restoration
+  Currently in latest version of impacket, if the attribute `msDS-KeyCredentialLink` is already populated, the scripts fails
+  and then you have to manually make changes to the script (to clear the value) and coerce again, then change back again the script to populate the attribute and make another coercion
+
 
 
 What is Impacket?
